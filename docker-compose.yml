@@ -1,0 +1,6 @@
+services:
+  sample-api:
+    build:
+      context: ./services/sample-api
+    ports:
+      - "8000:8000"
