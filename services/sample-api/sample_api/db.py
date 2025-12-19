@@ -9,3 +9,6 @@ SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
 class Base(DeclarativeBase):
     pass
+def init_db() -> None:
+    from . import models  # ensure models are imported
+    Base.metadata.create_all(bind=engine)

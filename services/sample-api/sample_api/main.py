@@ -1,10 +1,14 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from .db import SessionLocal
+from .db import SessionLocal, init_db
 from .models import Item
 
 app = FastAPI(title="sample-api")
+
+@app.on_event("startup")
+def on_startup():
+    init_db()
 
 def get_db():
     db = SessionLocal()
