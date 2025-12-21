@@ -2,11 +2,11 @@ import importlib
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import text
+import os
 
 pytestmark = pytest.mark.integration
 
-POSTGRES_URL = "postgresql+psycopg://app:app@localhost:5432/app"
-
+POSTGRES_URL = os.environ.get("DATABASE_URL", "postgresql+psycopg://app:app@localhost:5432/app")
 
 @pytest.fixture()
 def client(monkeypatch):

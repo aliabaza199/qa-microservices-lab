@@ -7,6 +7,25 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: app
+          POSTGRES_DB: app
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U app -d app"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 20
+
+    env:
+      DATABASE_URL: postgresql+psycopg://app:app@localhost:5432/app
+
     steps:
       - uses: actions/checkout@v4
 
@@ -20,6 +39,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ./services/sample-api[test]
 
-      - name: Run tests
+      - name: Run unit/component tests
         run: |
-          pytest -q services/sample-api/tests
+          pytest -q services/sample-api/tests -m "not integration"
+
+      - name: Run integration tests
+        run: |
+          pytest -q services/sample-api/tests -m integration
+
